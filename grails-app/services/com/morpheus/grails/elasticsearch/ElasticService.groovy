@@ -32,9 +32,9 @@ import org.apache.http.*
 import org.apache.http.entity.*
 import org.apache.http.nio.entity.*
 import org.apache.http.client.config.*
-import com.morpheus.util.ElasticQueryBuilder
-import com.morpheus.util.ElasticQueryBuilder.BulkRequest
-import com.morpheus.util.ElasticQueryBuilder.MultiSearch
+import com.morpheus.grails.elasticsearch.ElasticQueryBuilder
+import com.morpheus.grails.elasticsearch.ElasticQueryBuilder.BulkRequest
+import com.morpheus.grails.elasticsearch.ElasticQueryBuilder.MultiSearch
 
 import org.grails.core.artefact.DomainClassArtefactHandler
 import grails.core.GrailsApplication
@@ -71,7 +71,7 @@ class ElasticService {
 
 	def getRestClient() {
 		if(internalClient == null) {
-			def configHosts = grailsApplication.config.getProperty('elasticSearch.client.hosts',List<Map>,null)
+			def configHosts = grailsApplication.config.getProperty('elasticSearch.client.hosts',List,null)
 			def protocol = grailsApplication.config.getProperty('elasticSearch.protocol',String,'http')
 			def username = grailsApplication.config.getProperty('elasticSearch.user',String,null)
 			def password = grailsApplication.config.getProperty('elasticSearch.password', String,null)

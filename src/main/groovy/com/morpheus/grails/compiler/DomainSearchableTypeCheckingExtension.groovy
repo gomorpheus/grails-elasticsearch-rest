@@ -61,7 +61,9 @@ class DomainSearchableTypeCheckingExtension extends TypeCheckingDSL {
         methodNotFound { ClassNode receiver, String name, ArgumentListExpression argList, ClassNode[] argTypes, MethodCall call ->
             def dynamicCall
             if(currentScope.searchableClosureCode && currentScope.checkingSearchableClosure) {
-                dynamicCall = makeDynamic (call)
+                if(receiver.getField(name) || 'setIndexName' == name || 'root' == name || 'setExcept' == name) {
+                    dynamicCall = makeDynamic (call)
+                }
             }
             dynamicCall
         }

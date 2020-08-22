@@ -25,12 +25,12 @@ import groovy.transform.CompileStatic
  */
 @AnnotationCollector
 @CompileStatic(extensions=['org.grails.compiler.ValidateableTypeCheckingExtension',
+						   'com.morpheus.grails.compiler.DomainSearchableTypeCheckingExtension',
                            'org.grails.compiler.NamedQueryTypeCheckingExtension',
                            'org.grails.compiler.HttpServletRequestTypeCheckingExtension',
                            'org.grails.compiler.WhereQueryTypeCheckingExtension',
                            'org.grails.compiler.DynamicFinderTypeCheckingExtension',
                            'org.grails.compiler.DomainMappingTypeCheckingExtension',
-                           'com.morpheus.grails.compiler.DomainSearchableTypeCheckingExtension',
                            'org.grails.compiler.RelationshipManagementMethodTypeCheckingExtension'])
 @interface GrailsSearchableCompileStatic {
 }

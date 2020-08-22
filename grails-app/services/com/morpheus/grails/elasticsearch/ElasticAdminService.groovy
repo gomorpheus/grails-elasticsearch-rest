@@ -1,6 +1,6 @@
 package com.morpheus.grails.elasticsearch
 
-import com.morpheus.util.ElasticQueryBuilder
+import com.morpheus.grails.elasticsearch.ElasticQueryBuilder
 import grails.core.GrailsApplication
 import grails.core.GrailsClass
 import grails.core.GrailsDomainClass
