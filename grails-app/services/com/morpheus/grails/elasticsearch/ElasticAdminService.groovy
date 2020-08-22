@@ -79,7 +79,7 @@ class ElasticAdminService {
 			log.info("elastic - finished indexing domains")
 		}
 		//add listeners
-		def datastore = applicationContext.getBean(HibernateDatastore)
+		def datastore = grailsApplication.mainContext.getBean(HibernateDatastore)
 		grailsApplication.mainContext.addApplicationListener(new DomainSearchListener(this, datastore))
 		//done
 	}
@@ -646,6 +646,16 @@ class ElasticAdminService {
 			if(searchable instanceof Closure) {
 				DomainMap domainMap = new DomainMap(grailsApplication, domainClass)
 				Closure closure = (Closure)searchable.clone()
+				closure.setDelegate(domainMap)
+				closure.call()
+				rtn = domainMap
+			} else if(searchable instanceof Map) {
+				DomainMap domainMap = new DomainMap(grailsApplication, domainClass)
+				Closure closure = {
+					for(key in searchable.keySet()) {
+						"${key}"(searchable[key])
+					}
+				}
 				closure.setDelegate(domainMap)
 				closure.call()
 				rtn = domainMap

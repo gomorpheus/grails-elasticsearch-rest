@@ -58,22 +58,7 @@ There are multiple ways to utilize this plugin. One way is to use it to index al
 
 For a list of Available types please refer to the ElasticSearch official documentation.
 
-In addition to providing a means to defining an index for a `DomainClass`, This plugin provides a way to statically compile your Classes via the `GrailsSearchableCompileStatic` Annotation.
-
-```groovy
-import morpheus.grails.compiler.GrailsSearchableCompileStatic
-
-@GrailsSearchableCompileStatic
-class MyDomain {
-	static searchable = {
-
-	}
-
-	String name
-
-	...
-}
-```
+In addition to providing a means to defining an index for a `DomainClass`, This plugin provides a way to statically compile your Classes via the `GrailsCompileStatic` Annotation. To do this simply change the `searchable = {}` block to a `Map`
 
 
 Please refer to the javadoc on examples of how to use the `ElasticService` as well as the `ElasticQueryBuilder`
