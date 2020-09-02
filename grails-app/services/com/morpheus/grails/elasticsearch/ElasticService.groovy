@@ -69,6 +69,13 @@ class ElasticService {
 
 
 
+	void shutdownRestClient() {
+		if(internalClient) {
+
+			internalClient = null
+		}
+	}
+
 	def getRestClient() {
 		if(internalClient == null) {
 			def configHosts = grailsApplication.config.getProperty('elasticSearch.client.hosts',List,null)
@@ -194,6 +201,9 @@ class ElasticService {
 			rtn.data = data
 			rtn.responses = rtn.data.responses
 			rtn.success = true
+		} catch(RuntimeException re) {
+			log.warn("ElasticSearch RunTimeException Occurred. Throwing away Client and Creating new... {}",re.message,re)
+			shutdownRestClient()
 		} catch(e) {
 			log.error("error executing multi request: {}", e.message, e)
 			log.debug("multi request error body: {}", multiBody)
@@ -229,6 +239,9 @@ class ElasticService {
 				rtn.took = data.took ?: 0
 				rtn.items = data.items
 			}
+		} catch(RuntimeException re) {
+			log.warn("ElasticSearch RunTimeException Occurred. Throwing away Client and Creating new... {}",re.message,re)
+			shutdownRestClient()
 		} catch(e) {
 			log.error("error executing bulk request: ${e.message}", e)
 			log.debug("Error For Bulk Request Body: {}", bulkBody)
@@ -262,6 +275,9 @@ class ElasticService {
 			rtn.success = data.created == true
 			rtn.document = document
 			rtn.result = data.result
+		} catch(RuntimeException re) {
+			log.warn("ElasticSearch RunTimeException Occurred. Throwing away Client and Creating new... {}",re.message,re)
+			shutdownRestClient()
 		} catch(e) {
 			log.error("error saving document: ${e}", e)
 		}
@@ -294,6 +310,9 @@ class ElasticService {
 			rtn.success = data.created == true
 			rtn.document = document
 			rtn.result = data.result
+		} catch(RuntimeException re) {
+			log.warn("ElasticSearch RunTimeException Occurred. Throwing away Client and Creating new... {}",re.message,re)
+			shutdownRestClient()
 		} catch(e) {
 			log.error("error saving document: ${e}", e)
 		}
@@ -318,6 +337,9 @@ class ElasticService {
 			def data = content ? new groovy.json.JsonSlurper().parseText(content) : [:]
 			rtn.success = true
 			rtn.data = data
+		} catch(RuntimeException re) {
+			log.warn("ElasticSearch RunTimeException Occurred. Throwing away Client and Creating new... {}",re.message,re)
+			shutdownRestClient()
 		} catch(e) {
 			log.error("error creating index: ${e}", e)
 		}
@@ -337,6 +359,9 @@ class ElasticService {
 			def data = content ? new groovy.json.JsonSlurper().parseText(content) : [:]
 			rtn.success = true
 			rtn.data = data
+		} catch(RuntimeException re) {
+			log.warn("ElasticSearch RunTimeException Occurred. Throwing away Client and Creating new... {}",re.message,re)
+			shutdownRestClient()
 		} catch(e) {
 			log.error("error deleting index: ${e}", e)
 		}
@@ -412,6 +437,9 @@ class ElasticService {
 			def data = content ? new groovy.json.JsonSlurper().parseText(content) : [:]
 			rtn.data = data
 			rtn.success = true
+		} catch(RuntimeException re) {
+			log.warn("ElasticSearch RunTimeException Occurred. Throwing away Client and Creating new... {}",re.message,re)
+			shutdownRestClient()
 		} catch(e) {
 			log.error("error executing delete query: ${e}", e)
 		}
@@ -447,6 +475,9 @@ class ElasticService {
 			rtn.timedOut = data.timedOut ?: false
 			rtn.shards = data['_shards']
 			rtn.hits = data.hits
+		} catch(RuntimeException re) {
+			log.warn("ElasticSearch RunTimeException Occurred. Throwing away Client and Creating new... {}",re.message,re)
+			shutdownRestClient()
 		} catch(e) {
 			if(!e.message.contains('no such index')) {
 				log.error("error executing count: ${e}", e)
@@ -486,6 +517,9 @@ class ElasticService {
 			rtn.timedOut = data.timedOut ?: false
 			rtn.shards = data['_shards']
 			rtn.data = data
+		} catch(RuntimeException re) {
+			log.warn("ElasticSearch RunTimeException Occurred. Throwing away Client and Creating new... {}",re.message,re)
+			shutdownRestClient()
 		} catch(e) {
 			log.error("error executing aggregation: ${e}", e)
 		}
@@ -512,6 +546,9 @@ class ElasticService {
 			def data = content ? new groovy.json.JsonSlurper().parseText(content) : [:]
 			rtn.success = true
 			rtn.data = data
+		} catch(RuntimeException re) {
+			log.warn("ElasticSearch RunTimeException Occurred. Throwing away Client and Creating new... {}",re.message,re)
+			shutdownRestClient()
 		} catch(e) {
 			log.error("error executing put: ${e}", e)
 		}
@@ -538,6 +575,9 @@ class ElasticService {
 			def data = content ? new groovy.json.JsonSlurper().parseText(content) : [:]
 			rtn.success = true
 			rtn.data = data
+		} catch(RuntimeException re) {
+			log.warn("ElasticSearch RunTimeException Occurred. Throwing away Client and Creating new... {}",re.message,re)
+			shutdownRestClient()
 		} catch(e) {
 			log.error("error executing post: ${e}", e)
 		}
@@ -566,6 +606,9 @@ class ElasticService {
 			def data = content ? new groovy.json.JsonSlurper().parseText(content) : [:]
 			rtn.success = true
 			rtn.data = data
+		} catch(RuntimeException re) {
+			log.warn("ElasticSearch RunTimeException Occurred. Throwing away Client and Creating new... {}",re.message,re)
+			shutdownRestClient()
 		} catch(e) {
 			log.error("error executing get: ${e}", e)
 		}
@@ -595,6 +638,9 @@ class ElasticService {
 			def data = content ? new groovy.json.JsonSlurper().parseText(content) : [:]
 			rtn.success = true
 			rtn.data = data
+		} catch(RuntimeException re) {
+			log.warn("ElasticSearch RunTimeException Occurred. Throwing away Client and Creating new... {}",re.message,re)
+			shutdownRestClient()
 		} catch(e) {
 			log.error("error executing delete: ${e}", e)
 		}
