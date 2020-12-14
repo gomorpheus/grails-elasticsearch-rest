@@ -259,6 +259,7 @@ class ElasticAdminService {
 				for(int i = 0; i < runCount; i++) {
 					def offset = i * perPage
 					chunkedIndexDomain(internalDomain,offset,perPage,indexConfig)
+					flushQueue()
 				}
 			}
 		} catch(e) {
@@ -277,7 +278,6 @@ class ElasticAdminService {
 		objList.each { obj ->
 			indexObject(obj, indexConfig.domainMap)
 		}
-		flushQueue()
 	}
 
 	def indexObject(Object obj, DomainMap domainMap) {
