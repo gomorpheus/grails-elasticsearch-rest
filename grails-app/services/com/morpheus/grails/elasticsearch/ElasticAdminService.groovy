@@ -266,7 +266,7 @@ class ElasticAdminService {
 		}
 	}
 
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	@Transactional(propagation=Propagation.REQUIRES_NEW,readOnly=true)
 	def chunkedIndexDomain(internalDomain,offset,perPage,indexConfig) {
 		def objList = internalDomain.withCriteria {
 			firstResult(offset)
