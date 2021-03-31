@@ -50,6 +50,7 @@ import javax.net.ssl.SSLSocket
 import java.lang.reflect.InvocationTargetException
 import java.security.cert.X509Certificate
 import grails.core.GrailsApplication
+import groovy.util.logging.Slf4j
 
 /**
 * Wrapper Service around the ElasticSearch REST Client for performing common REST Operations
@@ -57,6 +58,7 @@ import grails.core.GrailsApplication
 *
 * @author Brian Wheeler
 */
+@Slf4j
 class ElasticService {
 
 	GrailsApplication grailsApplication

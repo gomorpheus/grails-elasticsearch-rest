@@ -16,7 +16,7 @@ import org.grails.orm.hibernate.HibernateDatastore
 import org.springframework.context.ApplicationEvent
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.util.Assert
-
+import groovy.util.logging.Slf4j
 import java.util.regex.Matcher
 
 /**
@@ -24,6 +24,7 @@ import java.util.regex.Matcher
 *
 * @author Brian Wheeler
 */
+@Slf4j
 class ElasticAdminService {
 
 	static searchablePropertyName = 'searchable'
