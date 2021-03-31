@@ -63,6 +63,11 @@ dependencies {
     testCompile "org.grails:grails-web-testing-support"
 }
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
 if (isReleaseVersion) {
     apply plugin: "io.github.gradle-nexus.publish-plugin"
     nexusPublishing {
@@ -82,7 +87,7 @@ if (isReleaseVersion) {
 publishing {
     publications {
         maven(MavenPublication) {
-            artifactId 'karman-grails'
+            artifactId 'grails-elasticsearch-rest'
             pom.withXml {
                 asNode().children().last() + {
                     resolveStrategy = Closure.DELEGATE_FIRST
@@ -128,6 +133,8 @@ publishing {
     }
 }
 
+
+
 afterEvaluate {
     signing {
         required { isReleaseVersion && gradle.taskGraph.hasTask("publish") }
@@ -143,6 +150,8 @@ tasks.withType(Sign) {
 tasks.withType(io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository).configureEach {
     shouldRunAfter(tasks.withType(Sign))
 }
+
+
 
 bootRun {
     ignoreExitValue true
