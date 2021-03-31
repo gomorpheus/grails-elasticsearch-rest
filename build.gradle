@@ -1,25 +1,31 @@
 buildscript {
     repositories {
-        jcenter()
         mavenCentral()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "io.github.gradle-nexus:publish-plugin:1.0.0"
     }
 }
 
 version "0.2.2"
-group "com.morpheus.grails.plugins"
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+group "com.morpheusdata.grails.plugins"
 
-apply plugin:"eclipse"
-apply plugin:"idea"
+apply plugin: "eclipse"
+apply plugin: "idea"
 apply plugin: 'java-library'
 apply plugin:"org.grails.grails-plugin"
-apply plugin:"org.grails.grails-plugin-publish"
+
+ext {
+    isBuildSnapshot = version.endsWith('-SNAPSHOT')
+    isReleaseVersion = !isBuildSnapshot
+}
+
 
 repositories {
-    jcenter()
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
 }
@@ -54,6 +60,85 @@ dependencies {
     testCompile "org.grails:grails-web-testing-support"
 }
 
+if (isReleaseVersion) {
+    apply plugin: "io.github.gradle-nexus.publish-plugin"
+    nexusPublishing {
+        repositories {
+            sonatype {
+                if(project.hasProperty('mavenUser')) {
+                    username = mavenUser
+                    password = mavenPassword
+                }   
+            }
+        }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId 'karman-grails'
+            pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = Closure.DELEGATE_FIRST
+                    name 'grails-elasticsearch-rest'
+                    description 'Grails ElasticSearch Low Level Rest Client'
+                    url 'https://github.com/gomorpheus/grails-elasticsearch-rest'
+                    scm {
+                        url 'https://github.com/gomorpheus/grails-elasticsearch-rest'
+                        connection 'scm:https://bertramdev@github.com/gomorpheus/grails-elasticsearch-rest.git'
+                        developerConnection 'scm:git://github.com/gomorpheus/grails-elasticsearch-rest.git'
+                    }
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/license/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'davydotcom'
+                            name 'David Estes'
+                            email 'davydotcom@gmail.com'
+                        }
+                    }
+                }
+            }
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            if( !isReleaseVersion ) {
+                url = "http://nexus.bertramlabs.com/content/repositories/snapshots"
+                if(project.hasProperty('labsNexusUser')) {
+                    credentials {
+                        username = labsNexusUser
+                        password = labsNexusPassword
+                    }
+                }
+            }
+        }
+    }
+}
+
+afterEvaluate {
+    signing {
+        required { isReleaseVersion && gradle.taskGraph.hasTask("publish") }
+        sign publishing.publications.maven
+    }
+}
+
+tasks.withType(Sign) {
+    onlyIf { isReleaseVersion }
+}
+
+//do not generate extra load on Nexus with new staging repository if signing fails
+tasks.withType(io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository).configureEach {
+    shouldRunAfter(tasks.withType(Sign))
+}
+
 bootRun {
     ignoreExitValue true
     jvmArgs(
@@ -73,29 +158,3 @@ tasks.withType(GroovyCompile) {
 }
 // enable if you wish to package this plugin as a standalone application
 bootJar.enabled = false
-
-bintray {
-    publications = ['maven']
-    pkg {
-        githubRepo = 'gomorpheus/grails-elasticsearch-rest' //Optional Github repository
-        githubReleaseNotesFile = 'README.md' //Optional Github readme file
-        repo = 'grails3-plugins'
-        userOrg = 'bertramlabs'
-        licenses = ['Apache-2.0']
-    }
-}
-
-grailsPublish {
-    if(project.hasProperty('bintrayUser')) {
-        user = bintrayUser
-        key = bintrayKey
-    }
-    userOrg = 'bertramlabs'
-    githubSlug = 'gomorpheus/grails-elasticsearch-rest'
-    license {
-        name = 'Apache-2.0'
-    }
-    title = "Grails REST ElasticSearch Plugin"
-    desc = "Full plugin description"
-    developers = [davydotcom:"David Estes"]
-}
