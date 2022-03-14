@@ -557,20 +557,24 @@ class ElasticService {
 		return rtn
 	}
 
-	def executePost(String index, String path, Map document) {
+	def executePost(String index, String path, Map document,Map queryParams=[:]) {
 		def rtn = [success:false]
 		try {
 			def queryUrl = '/' + index
 			if(path)
 				queryUrl = queryUrl + '/' + path
 			def restClient = getRestClient()
-			def queryParams = [:]
-			HttpEntity queryBody = new NStringEntity(document.encodeAsJson().toString(), ContentType.APPLICATION_JSON)
+			HttpEntity queryBody = null
+			if(document) {
+				queryBody = new NStringEntity(document.encodeAsJson().toString(), ContentType.APPLICATION_JSON)
+			}
 			//build the request
 			def request = new Request('POST', queryUrl)
 			if(queryParams)
 				request.addParameters(queryParams as Map<String, String>)
-			request.setEntity(queryBody)
+			if(queryBody) {
+				request.setEntity(queryBody)
+			}
 			//execute
 			def response = restClient.performRequest(request)
 			def content = response.getEntity().getContent().text
@@ -658,10 +662,10 @@ class ElasticService {
 	def executeIndexMerge(String index, Boolean flush = false, Integer maxSegments = 1, Map opts = [:]) {
 		def rtn
 		def indexConfig = [
-			max_num_segments:maxSegments,
-			flush:flush
+			max_num_segments:maxSegments?.toString(),
+			flush:flush?.toString()
 		]
-		rtn = executePost(index, '_forcemerge', indexConfig)
+		rtn = executePost(index, '_forcemerge',null, indexConfig)
 		return rtn
 	}
 
