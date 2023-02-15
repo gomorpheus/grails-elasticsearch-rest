@@ -105,6 +105,16 @@ class ElasticQueryBuilder {
 			return body.encodeAsJson().toString()
 		}
 
+		def setBaseKeyValue(String key, Object value) {
+			body[key] = value
+			return this
+		}
+
+		def setKeyValue(String key, Object value) {
+			queryTarget[key] = value
+			return this	
+		}
+
 		def getQuery() {
 			//println("getQuery: ${queryTarget}")
 			return queryTarget
@@ -181,6 +191,18 @@ class ElasticQueryBuilder {
 		def setQuery(query) {
 			body.query = query.body
 			queryTarget = body.query
+			return this
+		}
+
+		def addAggregation(Object aggregation) {
+			body.aggs = body.aggs ?: [:]
+			body.aggs << aggregation.body
+			return this
+		}
+
+		def addAggregation(String name, Object aggregation) {
+			body.aggs = body.aggs ?: [:]
+			body.aggs[name] = aggregation.body
 			return this
 		}
 

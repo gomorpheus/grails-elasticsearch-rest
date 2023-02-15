@@ -49,6 +49,14 @@ class ElasticAggregation {
 		return new MetricAggregation('stats', name)
 	}
 
+	static sampler(String name) {
+		return new SamplerAggregation(name)
+	}
+
+	static categorizeText(String name) {
+		return new CategorizeTextAggregation(name)
+	}
+
 	//internal classes
 	static class BaseAggregation {
 
@@ -61,8 +69,27 @@ class ElasticAggregation {
 			body[name].aggs << aggregation.body
 		}
 
+		def setBaseKeyValue(String key, Object value) {
+			body[key] = value
+			return this
+		}
+
+		def setKeyValue(String key, Object value) {
+			aggTarget[key] = value
+			return this	
+		}
+
 		String toString() {
 			return body.encodeAsJson().toString()
+		}
+
+		def getAggregation() {
+			//println("getAggregation: ${aggTarget}")
+			return aggTarget
+		}
+
+		def getMultiAggregation() {
+			return body
 		}
 
 	}
@@ -86,10 +113,12 @@ class ElasticAggregation {
 
 		def setSize(Integer size) {
 			body.size = size
+			return this
 		}
 
 		def setFrom(Integer from) {
 			body.from = from
+			return this
 		}
 
 		def addSort(String field, String order) {
@@ -97,10 +126,12 @@ class ElasticAggregation {
 			def newSort = [:]
 			newSort[field] = [order:order?.toLowerCase()]
 			body.sort << newSort
+			return this
 		}
 
 		def setAggregation(Object agg) {
 			body.aggs = agg.body
+			return this
 		}
 
 	}
@@ -116,10 +147,12 @@ class ElasticAggregation {
 
 		def setSize(Integer size) {
 			body.size = size
+			return this
 		}
 
 		def setFrom(Integer from) {
 			body.from = from
+			return this
 		}
 
 		def addSort(String field, String order) {
@@ -127,12 +160,15 @@ class ElasticAggregation {
 			def newSort = [:]
 			newSort[field] = [order:order?.toLowerCase()]
 			body.sort << newSort
+			return this
 		}
 
 		def setQuery(query) {
 			body.query = query.body
 			println("setQuery: ${query}")
+			return this
 		}
+
 	}
 
 	static class TermsAggregation extends BaseAggregation {
@@ -151,6 +187,53 @@ class ElasticAggregation {
 
 		def size(Integer size) {
 			aggTarget.size = size
+			return this
+		}
+
+	}
+
+	static class SamplerAggregation extends BaseAggregation {
+	
+		public SamplerAggregation(String name) {
+			this.name = name
+			body = [:]
+			body[name] = [sampler:[:]]
+			aggTarget = body[name].sampler
+		}
+
+		def shardSize(Integer size) {
+			aggTarget['shard_size'] = size
+			return this
+		}
+
+	}
+
+	static class CategorizeTextAggregation extends BaseAggregation {
+	
+		public CategorizeTextAggregation(String name) {
+			this.name = name
+			body = [:]
+			body[name] = ['categorize_text':[:]]
+			aggTarget = body[name]['categorize_text']
+		}
+
+		def field(String field) {
+			aggTarget.field = field
+			return this
+		}
+
+		def size(Integer size) {
+			aggTarget.size = size
+			return this
+		}
+
+		def maxMatchedTokens(Integer value) {
+			aggTarget['max_matched_tokens'] = value
+			return this
+		}
+
+		def similarityThreshold(Integer value) {
+			aggTarget['similarity_threshold'] = value
 			return this
 		}
 
