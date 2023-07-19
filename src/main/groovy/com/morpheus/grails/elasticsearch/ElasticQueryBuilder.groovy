@@ -53,6 +53,14 @@ class ElasticQueryBuilder {
 		return new QueryStringQuery(queryString)
 	}
 
+	static simpleQueryStringQuery(Stirng queryString) {
+		return new SimpleQueryStringQuery(queryString)
+	}
+
+	static simpleQueryStringQuery(String queryString, String defaultField) {
+		return new SimpleQueryStringQuery(queryString, defaultField)
+	}
+
 	static queryStringQuery(String queryString, String defaultField) {
 		return new QueryStringQuery(queryString, defaultField)
 	}
@@ -409,6 +417,52 @@ class ElasticQueryBuilder {
 			body.query_string.analyze_wildcard = value
 			return this
 		}
+	}
+
+	static class SimpleQueryStringQuery extends BaseQuery {
+
+		public SimpleQueryStringQuery(String queryString) {
+			body.simple_query_string = [:]
+			body.simple_query_string.query = queryString
+			queryTarget = body.simple_query_string
+		}
+
+		public SimpleQueryStringQuery(String queryString, String defaultField) {
+			body.simple_query_string = [:]
+			body.simple_query_string.query = queryString
+			body.simple_query_string.default_field = defaultField
+			queryTarget = body.simple_query_string
+		}
+		
+		def defaultOperator(String value) {
+			body.simple_query_string.default_operator = value
+			return this
+		}
+		
+		def lenient(Boolean value) {
+			body.simple_query_string.lenient = value
+			return this
+		}
+		
+		def analyzer(String value) {
+			body.simple_query_string.analyzer = value
+			return this
+		}
+		
+		def autoGenerateSynonymsPhraseQueries(Boolean value) {
+			body.simple_query_string.auto_generate_synonyms_phrase_query = value
+			return this
+		}
+
+		def fields(Collection values) {
+			body.simple_query_string.fields = values
+			return this
+		}
+		
+		
+		
+		
+		
 	}
 
 	static class BoolQuery extends BaseQuery {
