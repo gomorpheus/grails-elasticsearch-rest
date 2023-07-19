@@ -53,7 +53,7 @@ class ElasticQueryBuilder {
 		return new QueryStringQuery(queryString)
 	}
 
-	static simpleQueryStringQuery(Stirng queryString) {
+	static simpleQueryStringQuery(String queryString) {
 		return new SimpleQueryStringQuery(queryString)
 	}
 
