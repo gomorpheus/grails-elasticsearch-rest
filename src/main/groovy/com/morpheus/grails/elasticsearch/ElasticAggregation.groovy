@@ -260,9 +260,7 @@ class ElasticAggregation {
 		}
 
 		def interval(Long interval) {
-			//@deprecated in 7.2 interval changes to fixed_interval but have to leave as interval to support aws elastic
-			aggTarget.interval = "${interval}ms"
-			// aggTarget.fixed_interval = "${interval}ms"
+			aggTarget.fixed_interval = "${interval}ms"
 			return this
 		}
 
