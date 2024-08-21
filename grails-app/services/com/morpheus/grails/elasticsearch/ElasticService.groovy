@@ -51,6 +51,7 @@ import java.lang.reflect.InvocationTargetException
 import java.security.cert.X509Certificate
 import grails.core.GrailsApplication
 import groovy.util.logging.Slf4j
+import groovy.json.JsonOutput
 
 /**
 * Wrapper Service around the ElasticSearch REST Client for performing common REST Operations
@@ -263,7 +264,7 @@ class ElasticService {
 			def queryParams = [:]
 			if(opts.refresh != null)
 				queryParams.put('refresh', opts.refresh)
-			HttpEntity queryBody = new NStringEntity(document.encodeAsJson().toString(), ContentType.APPLICATION_JSON)
+			HttpEntity queryBody = new NStringEntity(JsonOutput.toJson(document), ContentType.APPLICATION_JSON)
 			//build the request
 			def request = new Request('PUT', queryUrl)
 			if(queryParams)
@@ -298,7 +299,7 @@ class ElasticService {
 			if(opts.refresh != null)
 				queryParams.put('refresh', opts.refresh)
 			def body = [doc:document]
-			HttpEntity queryBody = new NStringEntity(body.encodeAsJson().toString(), ContentType.APPLICATION_JSON)
+			HttpEntity queryBody = new NStringEntity(JsonOutput.toJson(body), ContentType.APPLICATION_JSON)
 			//build the request
 			def request = new Request('POST', queryUrl)
 			if(queryParams)
@@ -327,7 +328,7 @@ class ElasticService {
 			def queryUrl = '/' + index
 			def restClient = getRestClient()
 			def queryParams = [:]
-			HttpEntity queryBody = new NStringEntity(config.encodeAsJson().toString(), ContentType.APPLICATION_JSON)
+			HttpEntity queryBody = new NStringEntity(JsonOutput.toJson(config), ContentType.APPLICATION_JSON)
 			//build the request
 			def request = new Request('PUT', queryUrl)
 			if(queryParams)
@@ -536,7 +537,7 @@ class ElasticService {
 				queryUrl = queryUrl + '/' + path
 			def restClient = getRestClient()
 			def queryParams = [:]
-			HttpEntity queryBody = new NStringEntity(document.encodeAsJson().toString(), ContentType.APPLICATION_JSON)
+			HttpEntity queryBody = new NStringEntity(JsonOutput.toJson(document), ContentType.APPLICATION_JSON)
 			//build the request
 			def request = new Request('PUT', queryUrl)
 			if(queryParams)
@@ -566,7 +567,7 @@ class ElasticService {
 			def restClient = getRestClient()
 			HttpEntity queryBody = null
 			if(document) {
-				queryBody = new NStringEntity(document.encodeAsJson().toString(), ContentType.APPLICATION_JSON)
+				queryBody = new NStringEntity(JsonOutput.toJson(document), ContentType.APPLICATION_JSON)
 			}
 			//build the request
 			def request = new Request('POST', queryUrl)
@@ -605,7 +606,7 @@ class ElasticService {
 			if(queryParams)
 				request.addParameters(queryParams as Map<String, String>)
 			if(document)
-				request.setEntity(NStringEntity(document.encodeAsJson().toString(), ContentType.APPLICATION_JSON))
+				request.setEntity(NStringEntity(JsonOutput.toJson(document), ContentType.APPLICATION_JSON))
 			//execute
 			def response = restClient.performRequest(request)
 			def content = response.getEntity().getContent().text

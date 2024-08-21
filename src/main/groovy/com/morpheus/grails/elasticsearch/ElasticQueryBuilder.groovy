@@ -1,5 +1,7 @@
 package com.morpheus.grails.elasticsearch
 
+import groovy.json.JsonOutput
+
 
 /**
 * Simplified ElasticSearch Query Builder for performing Query Operations
@@ -110,7 +112,7 @@ class ElasticQueryBuilder {
 		Map queryTarget
 
 		String toString() {
-			return body.encodeAsJson().toString()
+			return JsonOutput.toJson(body)
 		}
 
 		def setBaseKeyValue(String key, Object value) {
@@ -565,7 +567,7 @@ class ElasticQueryBuilder {
 
 		def getRequestBody() {
 			def rtn = searchItems.collect{ multiItem ->
-				return multiItem.encodeAsJson().toString()
+				return JsonOutput.toJson(multiItem)
 			}?.join('\n')
 			return rtn
 		}
@@ -594,7 +596,7 @@ class ElasticQueryBuilder {
 
 		def getRequestBody() {
 			def rtn = bulkItems.collect{ bulkItem ->
-				return bulkItem.encodeAsJson().toString()
+				return JsonOutput.toJson(bulkItem)
 			}?.join('\n') + '\n'
 			return rtn
 		}

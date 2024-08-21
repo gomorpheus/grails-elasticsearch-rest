@@ -1,6 +1,7 @@
 package com.morpheus.grails.elasticsearch
 
 import ElasticQueryBuilder.*
+import groovy.json.JsonOutput
 
 class ElasticAggregation {
 
@@ -80,7 +81,7 @@ class ElasticAggregation {
 		}
 
 		String toString() {
-			return body.encodeAsJson().toString()
+			return JsonOutput.toJson(body)
 		}
 
 		def getAggregation() {
