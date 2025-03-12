@@ -385,6 +385,13 @@ class ElasticAdminService {
 		return aliasResults
 	}
 
+	// create an index template (this endpoint is used for datastreams)
+	def installIndexTemplate(String name, Map config) {
+		def templateResults = elasticService.executePut('_index_template', name, config)
+		log.debug("install template: {}", templateResults)
+		return templateResults
+	}
+
 	//templates
 	def installTemplate(String name, Map config) {
 		def templateResults = elasticService.executePut('_template', name, config)

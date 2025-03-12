@@ -252,6 +252,38 @@ class ElasticService {
 		return rtn
 	}
 
+	def createDocument(String index, String path, Map document, Map opts = [:]) {
+		def rtn = [success:false]
+		try {
+			def queryUrl = '/' + index
+			if(path)
+				queryUrl = queryUrl + '/' + path
+			def restClient = getRestClient()
+			def queryParams = [:]
+			if(opts.refresh != null)
+				queryParams.put('refresh', opts.refresh)
+			HttpEntity queryBody = new NStringEntity(JsonOutput.toJson(document), ContentType.APPLICATION_JSON)
+			//build the request
+			def request = new Request('POST', queryUrl)
+			if(queryParams)
+				request.addParameters(queryParams as Map<String, String>)
+			request.setEntity(queryBody)
+			//execute
+			def response = restClient.performRequest(request)
+			def content = response.getEntity().getContent().text
+			def data = content ? new groovy.json.JsonSlurper().parseText(content) : [:]
+			rtn.success = data.created == true
+			rtn.document = document
+			rtn.result = data.result
+		} catch(RuntimeException re) {
+			log.warn("ElasticSearch RunTimeException Occurred. Throwing away Client and Creating new... {}",re.message,re)
+			shutdownRestClient()
+		} catch(e) {
+			log.error("error creating document: ${e}", e)
+		}
+		return rtn
+	}
+
 	def saveDocument(String index, String path, Map document, String docId = null, Map opts = [:]) {
 		def rtn = [success:false]
 		try {
