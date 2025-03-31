@@ -272,7 +272,7 @@ class ElasticService {
 			def response = restClient.performRequest(request)
 			def content = response.getEntity().getContent().text
 			def data = content ? new groovy.json.JsonSlurper().parseText(content) : [:]
-			rtn.success = data.created == true
+			rtn.success = data.result == "created"
 			rtn.document = document
 			rtn.result = data.result
 		} catch(RuntimeException re) {
