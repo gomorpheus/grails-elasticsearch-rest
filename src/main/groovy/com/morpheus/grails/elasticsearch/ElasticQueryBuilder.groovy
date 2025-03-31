@@ -115,12 +115,12 @@ class ElasticQueryBuilder {
 			return JsonOutput.toJson(body)
 		}
 
-		BaseQuery setBaseKeyValue(String key, Object value) {
+		def setBaseKeyValue(String key, Object value) {
 			body[key] = value
 			return this
 		}
 
-		BaseQuery setKeyValue(String key, Object value) {
+		def setKeyValue(String key, Object value) {
 			queryTarget[key] = value
 			return this	
 		}

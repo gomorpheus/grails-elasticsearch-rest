@@ -69,14 +69,14 @@ class ElasticAggregation {
 			body[name].aggs << aggregation.body
 		}
 
-		BaseAggregation setBaseKeyValue(String key, Object value) {
+		def setBaseKeyValue(String key, Object value) {
 			body[key] = value
 			return this
 		}
 
-		BaseAggregation setKeyValue(String key, Object value) {
+		def setKeyValue(String key, Object value) {
 			aggTarget[key] = value
-			return this	
+			return this
 		}
 
 		String toString() {
@@ -193,7 +193,7 @@ class ElasticAggregation {
 	}
 
 	static class SamplerAggregation extends BaseAggregation {
-	
+
 		public SamplerAggregation(String name) {
 			this.name = name
 			body = [:]
@@ -209,7 +209,7 @@ class ElasticAggregation {
 	}
 
 	static class CategorizeTextAggregation extends BaseAggregation {
-	
+
 		public CategorizeTextAggregation(String name) {
 			this.name = name
 			body = [:]
@@ -276,7 +276,7 @@ class ElasticAggregation {
 			]
 			return this
 		}
-		
+
 	}
 
 	//metrics
