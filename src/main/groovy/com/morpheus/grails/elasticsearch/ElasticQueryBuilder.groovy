@@ -241,10 +241,12 @@ class ElasticQueryBuilder {
 
 		def setSize(Integer size) {
 			body.size = size
+			return this
 		}
 
 		def setFrom(Integer from) {
 			body.from = from
+			return this
 		}
 
 		def addSort(String field, String order) {
@@ -252,11 +254,13 @@ class ElasticQueryBuilder {
 			def newSort = [:]
 			newSort[field] = [order:order?.toLowerCase()]
 			body.sort << newSort
+			return this
 		}
 
 		def setQuery(query) {
 			body.query = query.body
 			queryTarget = body.query
+			return this
 		}
 
 		def getMultiQuery() {
@@ -539,6 +543,7 @@ class ElasticQueryBuilder {
 
 		def boost(Double value) {
 			queryTarget.boost = value
+			return this
 		}
 
 	}
