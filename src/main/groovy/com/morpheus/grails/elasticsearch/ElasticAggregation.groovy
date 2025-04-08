@@ -68,6 +68,7 @@ class ElasticAggregation {
 		def subAggregation(Object aggregation) {
 			body[name].aggs = body[name].aggs ?: [:]
 			body[name].aggs << aggregation.body
+			return this
 		}
 
 		def setBaseKeyValue(String key, Object value) {
@@ -299,6 +300,18 @@ class ElasticAggregation {
 			return this
 		}
 
+		def setSize(Integer size) {
+			aggTarget.size = size
+			return this
+		}
+
+		def addSort(String field, String order) {
+			aggTarget.sort = aggTarget.sort ?: []
+			def newSort = [:]
+			newSort[field] = [order:order?.toLowerCase()]
+			aggTarget.sort << newSort
+			return this
+		}
 	}
 
 	//internal stuff
