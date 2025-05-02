@@ -45,6 +45,8 @@ class ElasticAdminService {
 	static Map<String, String> indexAliases = [:]
 	static Map<String, String> indexVersions = [:]
 
+	static boolean domainMappingsInstalled = false
+
 	//queueing structures
 	def indexRequests = [:]
 	def deleteRequests = [:]
@@ -86,7 +88,8 @@ class ElasticAdminService {
 	}
 
 	Map getIndexMapping() {
-		if(indexMap?.size() == 0) {
+		// if installDomainMappings was already run, don't run it again.
+		if(indexMap?.size() == 0 && !domainMappingsInstalled) {
 			synchronized(startupMutex) {
 				//reload it
 				installDomainMappings()
@@ -181,6 +184,7 @@ class ElasticAdminService {
 				}
 			}
 		}
+		domainMappingsInstalled = true
 		log.info("elastic - finished installing domain mappings")
 	}
 
