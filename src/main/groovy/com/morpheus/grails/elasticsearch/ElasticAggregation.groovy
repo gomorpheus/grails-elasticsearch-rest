@@ -1,60 +1,59 @@
 package com.morpheus.grails.elasticsearch
 
-import ElasticQueryBuilder.*
 import groovy.json.JsonOutput
 
 class ElasticAggregation {
 
-	static rootAggregation() {
+	static RootAggregation rootAggregation() {
 		return new RootAggregation()
 	}
 
-	static rootAggregation(String index, String type) {
+	static RootAggregation rootAggregation(String index, String type) {
 		return new RootAggregation(index, type)
 	}
 
 	//aggregation calls
-	static filter(String name, Object query) {
+	static FilterAggregation filter(String name, Object query) {
 		return new FilterAggregation(name, query)
 	}
 
-	static dateHistogram(String name) {
+	static DateHistogramAggregation dateHistogram(String name) {
 		return new DateHistogramAggregation(name)
 	}
 
-	static terms(String name) {
+	static TermsAggregation terms(String name) {
 		return new TermsAggregation(name)
 	}
 
-	static avg(String name) {
+	static MetricAggregation avg(String name) {
 		return new MetricAggregation('avg', name)
 	}
 
-	static sum(String name) {
+	static MetricAggregation sum(String name) {
 		return new MetricAggregation('sum', name)
 	}
 
-	static max(String name) {
+	static MetricAggregation max(String name) {
 		return new MetricAggregation('max', name)
 	}
 
-	static min(String name) {
+	static MetricAggregation min(String name) {
 		return new MetricAggregation('min', name)
 	}
 
-	static metric(String type, String name) {
+	static MetricAggregation metric(String type, String name) {
 		return new MetricAggregation(type, name)
 	}
 
-	static stats(String name) {
+	static MetricAggregation stats(String name) {
 		return new MetricAggregation('stats', name)
 	}
 
-	static sampler(String name) {
+	static SamplerAggregation sampler(String name) {
 		return new SamplerAggregation(name)
 	}
 
-	static categorizeText(String name) {
+	static CategorizeTextAggregation categorizeText(String name) {
 		return new CategorizeTextAggregation(name)
 	}
 
@@ -78,19 +77,19 @@ class ElasticAggregation {
 
 		def setKeyValue(String key, Object value) {
 			aggTarget[key] = value
-			return this	
+			return this
 		}
 
 		String toString() {
 			return JsonOutput.toJson(body)
 		}
 
-		def getAggregation() {
+		Map getAggregation() {
 			//println("getAggregation: ${aggTarget}")
 			return aggTarget
 		}
 
-		def getMultiAggregation() {
+		Map getMultiAggregation() {
 			return body
 		}
 
@@ -113,17 +112,17 @@ class ElasticAggregation {
 			aggTarget = body.aggs
 		}
 
-		def setSize(Integer size) {
+		RootAggregation setSize(Integer size) {
 			body.size = size
 			return this
 		}
 
-		def setFrom(Integer from) {
+		RootAggregation setFrom(Integer from) {
 			body.from = from
 			return this
 		}
 
-		def addSort(String field, String order) {
+		RootAggregation addSort(String field, String order) {
 			body.sort = body.sort ?: []
 			def newSort = [:]
 			newSort[field] = [order:order?.toLowerCase()]
@@ -131,7 +130,7 @@ class ElasticAggregation {
 			return this
 		}
 
-		def setAggregation(Object agg) {
+		RootAggregation setAggregation(Object agg) {
 			body.aggs = agg.body
 			return this
 		}
@@ -147,17 +146,17 @@ class ElasticAggregation {
 			aggTarget = body[name]
 		}
 
-		def setSize(Integer size) {
+		FilterAggregation setSize(Integer size) {
 			body.size = size
 			return this
 		}
 
-		def setFrom(Integer from) {
+		FilterAggregation setFrom(Integer from) {
 			body.from = from
 			return this
 		}
 
-		def addSort(String field, String order) {
+		FilterAggregation addSort(String field, String order) {
 			body.sort = body.sort ?: []
 			def newSort = [:]
 			newSort[field] = [order:order?.toLowerCase()]
@@ -165,7 +164,7 @@ class ElasticAggregation {
 			return this
 		}
 
-		def setQuery(query) {
+		FilterAggregation setQuery(query) {
 			body.query = query.body
 			println("setQuery: ${query}")
 			return this
@@ -182,12 +181,12 @@ class ElasticAggregation {
 			aggTarget = body[name].terms
 		}
 
-		def field(String field) {
+		TermsAggregation field(String field) {
 			aggTarget.field = field
 			return this
 		}
 
-		def size(Integer size) {
+		TermsAggregation size(Integer size) {
 			aggTarget.size = size
 			return this
 		}
@@ -195,7 +194,7 @@ class ElasticAggregation {
 	}
 
 	static class SamplerAggregation extends BaseAggregation {
-	
+
 		public SamplerAggregation(String name) {
 			this.name = name
 			body = [:]
@@ -203,7 +202,7 @@ class ElasticAggregation {
 			aggTarget = body[name].sampler
 		}
 
-		def shardSize(Integer size) {
+		SamplerAggregation shardSize(Integer size) {
 			aggTarget['shard_size'] = size
 			return this
 		}
@@ -211,7 +210,7 @@ class ElasticAggregation {
 	}
 
 	static class CategorizeTextAggregation extends BaseAggregation {
-	
+
 		public CategorizeTextAggregation(String name) {
 			this.name = name
 			body = [:]
@@ -219,22 +218,22 @@ class ElasticAggregation {
 			aggTarget = body[name]['categorize_text']
 		}
 
-		def field(String field) {
+		CategorizeTextAggregation field(String field) {
 			aggTarget.field = field
 			return this
 		}
 
-		def size(Integer size) {
+		CategorizeTextAggregation size(Integer size) {
 			aggTarget.size = size
 			return this
 		}
 
-		def maxMatchedTokens(Integer value) {
+		CategorizeTextAggregation maxMatchedTokens(Integer value) {
 			aggTarget['max_matched_tokens'] = value
 			return this
 		}
 
-		def similarityThreshold(Integer value) {
+		CategorizeTextAggregation similarityThreshold(Integer value) {
 			aggTarget['similarity_threshold'] = value
 			return this
 		}
@@ -251,34 +250,34 @@ class ElasticAggregation {
 			aggTarget = body[name].date_histogram
 		}
 
-		def field(String field) {
+		DateHistogramAggregation field(String field) {
 			aggTarget.field = field
 			return this
 		}
 
-		def minDocCount(Integer minDocCount) {
+		DateHistogramAggregation minDocCount(Integer minDocCount) {
 			aggTarget.min_doc_count = minDocCount
 			return this
 		}
 
-		def interval(Long interval) {
+		DateHistogramAggregation interval(Long interval) {
 			aggTarget.fixed_interval = "${interval}ms"
 			return this
 		}
 
-		def format(String format) {
+		DateHistogramAggregation format(String format) {
 			aggTarget.format = format
 			return this
 		}
 
-		def extendedBounds(min, max) {
+		DateHistogramAggregation extendedBounds(min, max) {
 			aggTarget.extended_bounds = [
 				min:min,
 				max:max
 			]
 			return this
 		}
-		
+
 	}
 
 	//metrics
@@ -295,7 +294,7 @@ class ElasticAggregation {
 			aggTarget = body[name][metricType]
 		}
 
-		def field(String field) {
+		MetricAggregation field(String field) {
 			aggTarget.field = field
 			return this
 		}

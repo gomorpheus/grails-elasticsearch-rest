@@ -11,95 +11,95 @@ import groovy.json.JsonOutput
 class ElasticQueryBuilder {
 
 	//query calls
-	static rootQuery() {
+	static RootQuery rootQuery() {
 		return new RootQuery()
 	}
 
-	static rootQuery(String index, String type) {
+	static RootQuery rootQuery(String index, String type) {
 		return new RootQuery(index, type)
 	}
 
-	static countQuery() {
+	static CountQuery countQuery() {
 		return new CountQuery()
 	}
 
-	static countQuery(String index, String type) {
+	static CountQuery countQuery(String index, String type) {
 		return new CountQuery(index, type)
 	}
 
-	static boolQuery() {
+	static BoolQuery boolQuery() {
 		return new BoolQuery()
 	}
 
-	static termQuery(String field, Object value) {
+	static TermQuery termQuery(String field, Object value) {
 		return new TermQuery(field, value)
 	}
 
-	static termsQuery(String field, List values) {
+	static TermsQuery termsQuery(String field, List values) {
 		return new TermsQuery(field, values)
 	}
 
-	static termsQuery(String field, Object[] values) {
+	static TermsQuery termsQuery(String field, Object[] values) {
 		return new TermsQuery(field, Arrays.asList(values))
 	}
 
-	static rangeQuery(String field) {
+	static RangeQuery rangeQuery(String field) {
 		return new RangeQuery(field)
 	}
 
-	static typeQuery(String type) {
+	static TypeQuery typeQuery(String type) {
 		return new TypeQuery(type)
 	}
 
-	static queryStringQuery(String queryString) {
+	static QueryStringQuery queryStringQuery(String queryString) {
 		return new QueryStringQuery(queryString)
 	}
 
-	static simpleQueryStringQuery(String queryString) {
+	static SimpleQueryStringQuery simpleQueryStringQuery(String queryString) {
 		return new SimpleQueryStringQuery(queryString)
 	}
 
-	static simpleQueryStringQuery(String queryString, String defaultField) {
+	static SimpleQueryStringQuery simpleQueryStringQuery(String queryString, String defaultField) {
 		return new SimpleQueryStringQuery(queryString, defaultField)
 	}
 
-	static queryStringQuery(String queryString, String defaultField) {
+	static QueryStringQuery queryStringQuery(String queryString, String defaultField) {
 		return new QueryStringQuery(queryString, defaultField)
 	}
 
-	static idsQuery() {
+	static IdsQuery idsQuery() {
 		return new IdsQuery()
 	}
 
-	static nestedQuery(String path, Object query, String scoreMode) {
+	static NestedQuery nestedQuery(String path, Object query, String scoreMode) {
 		return new NestedQuery(path, query, scoreMode)
 	}
 
-	static prefixQuery(String field, Object value) {
+	static PrefixQuery prefixQuery(String field, Object value) {
 		return new PrefixQuery(field, value)
 	}
 
-	static matchQuery(String field, Object value) {
+	static MatchQuery matchQuery(String field, Object value) {
 		return new MatchQuery(field, value)
 	}
 
-	static matchAllQuery() {
+	static MatchAllQuery matchAllQuery() {
 		return new MatchAllQuery()
 	}
 
-	static matchPhrasePrefixQuery(String field, Object value) {
+	static MatchPhrasePrefixQuery matchPhrasePrefixQuery(String field, Object value) {
 		return new MatchPhrasePrefixQuery(field, value)
 	}
 
-	static existsQuery(String field) {
+	static ExistsQuery existsQuery(String field) {
 		return new ExistsQuery(field)
 	}
 
-	static prepareMultiSearch() {
+	static MultiSearch prepareMultiSearch() {
 		return new MultiSearch()
 	}
 
-	static prepareBulk() {
+	static BulkRequest prepareBulk() {
 		return new BulkRequest()
 	}
 
@@ -125,12 +125,12 @@ class ElasticQueryBuilder {
 			return this	
 		}
 
-		def getQuery() {
+		Map getQuery() {
 			//println("getQuery: ${queryTarget}")
 			return queryTarget
 		}
 
-		def getMultiQuery() {
+		Map getMultiQuery() {
 			return body
 		}
 
@@ -154,23 +154,23 @@ class ElasticQueryBuilder {
 			queryTarget = body.query
 		}
 
-		def setSize(Integer size) {
+		RootQuery setSize(Integer size) {
 			body.size = size
 			return this
 		}
 
-		def setFrom(Integer from) {
+		RootQuery setFrom(Integer from) {
 			body.from = from
 			return this
 		}
 		
-		def prepareDelete() {
+		RootQuery prepareDelete() {
 			body.remove('from')
 			body.remove('size')
 			return this
 		}
 
-		def addSort(String field, String order) {
+		RootQuery addSort(String field, String order) {
 			body.sort = body.sort ?: []
 			def newSort = [:]
 			newSort[field] = [order:order?.toLowerCase()]
@@ -178,7 +178,7 @@ class ElasticQueryBuilder {
 			return this
 		}
 
-		def addSort(String field, String order, String unmappedType, String missing) {
+		RootQuery addSort(String field, String order, String unmappedType, String missing) {
 			body.sort = body.sort ?: []
 			def newSort = [:]
 			newSort[field] = [order:order?.toLowerCase()]
@@ -190,7 +190,7 @@ class ElasticQueryBuilder {
 			return this
 		}
 
-		def addIndexBoost(String index, Float boost) {
+		RootQuery addIndexBoost(String index, Float boost) {
 			body.indices_boost = body.indices_boost ?: []
 			def newBoost = [:]
 			newBoost[index] = boost
@@ -198,25 +198,25 @@ class ElasticQueryBuilder {
 			return this  
 		}
 
-		def setQuery(query) {
+		RootQuery setQuery(query) {
 			body.query = query.body
 			queryTarget = body.query
 			return this
 		}
 
-		def addAggregation(Object aggregation) {
+		RootQuery addAggregation(Object aggregation) {
 			body.aggs = body.aggs ?: [:]
 			body.aggs << aggregation.body
 			return this
 		}
 
-		def addAggregation(String name, Object aggregation) {
+		RootQuery addAggregation(String name, Object aggregation) {
 			body.aggs = body.aggs ?: [:]
 			body.aggs[name] = aggregation.body
 			return this
 		}
 
-		def getMultiQuery() {
+		Map getMultiQuery() {
 			return body
 		}
 
@@ -239,17 +239,17 @@ class ElasticQueryBuilder {
 			queryTarget = body.query
 		}
 
-		def setSize(Integer size) {
+		void setSize(Integer size) {
 			body.size = size
 			return this
 		}
 
-		def setFrom(Integer from) {
+		void setFrom(Integer from) {
 			body.from = from
 			return this
 		}
 
-		def addSort(String field, String order) {
+		void addSort(String field, String order) {
 			body.sort = body.sort ?: []
 			def newSort = [:]
 			newSort[field] = [order:order?.toLowerCase()]
@@ -257,13 +257,13 @@ class ElasticQueryBuilder {
 			return this
 		}
 
-		def setQuery(query) {
+		void setQuery(query) {
 			body.query = query.body
 			queryTarget = body.query
 			return this
 		}
 
-		def getMultiQuery() {
+		Map getMultiQuery() {
 			return body
 		}
 
@@ -337,17 +337,17 @@ class ElasticQueryBuilder {
 			queryTarget = body.ids
 		}
 
-		def setTypes(String type) {
+		IdsQuery setTypes(String type) {
 			queryTarget.type = type
 			return this
 		}
 
-		def addIds(List idList) {
+		IdsQuery addIds(List idList) {
 			queryTarget.values += idList
 			return this
 		}
 
-		def addIds(Object object) {
+		IdsQuery addIds(Object object) {
 			queryTarget.values << object
 			return this
 		}
@@ -379,47 +379,47 @@ class ElasticQueryBuilder {
 			queryTarget = body.query_string
 		}
 		
-		def defaultOperator(String value) {
+		QueryStringQuery defaultOperator(String value) {
 			body.query_string.default_operator = value
 			return this
 		}
 		
-		def lenient(Boolean value) {
+		QueryStringQuery lenient(Boolean value) {
 			body.query_string.lenient = value
 			return this
 		}
 		
-		def analyzer(String value) {
+		QueryStringQuery analyzer(String value) {
 			body.query_string.analyzer = value
 			return this
 		}
 		
-		def autoGeneratePhraseQueries(Boolean value) {
+		QueryStringQuery autoGeneratePhraseQueries(Boolean value) {
 			//body.query_string.auto_generate_phrase_queries = value
 			return this
 		}
 
-		def fields(Collection values) {
+		QueryStringQuery fields(Collection values) {
 			body.query_string.fields = values
 			return this
 		}
 		
-		def type(String value) {
+		QueryStringQuery type(String value) {
 			body.query_string.type = value
 			return this
 		}
 
-		def rewrite(String value) {
+		QueryStringQuery rewrite(String value) {
 			body.query_string.rewrite = value
 			return this
 		}
 
-		def phraseSlop(Integer value) {
+		QueryStringQuery phraseSlop(Integer value) {
 			body.query_string.phrase_slop = value
 			return this
 		}
 		
-		def analyzeWildcard(Boolean value) {
+		QueryStringQuery analyzeWildcard(Boolean value) {
 			body.query_string.analyze_wildcard = value
 			return this
 		}
@@ -440,27 +440,27 @@ class ElasticQueryBuilder {
 			queryTarget = body.simple_query_string
 		}
 		
-		def defaultOperator(String value) {
+		SimpleQueryStringQuery defaultOperator(String value) {
 			body.simple_query_string.default_operator = value
 			return this
 		}
 		
-		def lenient(Boolean value) {
+		SimpleQueryStringQuery lenient(Boolean value) {
 			body.simple_query_string.lenient = value
 			return this
 		}
 		
-		def analyzer(String value) {
+		SimpleQueryStringQuery analyzer(String value) {
 			body.simple_query_string.analyzer = value
 			return this
 		}
 		
-		def autoGenerateSynonymsPhraseQueries(Boolean value) {
+		SimpleQueryStringQuery autoGenerateSynonymsPhraseQueries(Boolean value) {
 			body.simple_query_string.auto_generate_synonyms_phrase_query = value
 			return this
 		}
 
-		def fields(Collection values) {
+		SimpleQueryStringQuery fields(Collection values) {
 			body.simple_query_string.fields = values
 			return this
 		}
@@ -478,22 +478,22 @@ class ElasticQueryBuilder {
 			queryTarget = body.bool
 		}
 
-		def must(query) {
+		BoolQuery must(query) {
 			queryTarget.must = addFlexArrayMapValue(queryTarget.must, query.body)
 			return this
 		}
 
-		def should(query) {
+		BoolQuery should(query) {
 			queryTarget.should = addFlexArrayMapValue(queryTarget.should, query.body)
 			return this
 		}
 
-		def filter(query) {
+		BoolQuery filter(query) {
 			queryTarget.filter = addFlexArrayMapValue(queryTarget.filter, query.body)
 			return this	
 		}
 
-		def mustNot(query) {
+		BoolQuery mustNot(query) {
 			queryTarget.must_not = addFlexArrayMapValue(queryTarget.must_not, query.body)
 			return this
 		}
@@ -511,37 +511,37 @@ class ElasticQueryBuilder {
 			queryTarget = body.range[field]
 		}
 
-		def from(Object value) {
+		RangeQuery from(Object value) {
 			queryTarget.gte = value
 			return this
 		}
 
-		def to(Object value) {
+		RangeQuery to(Object value) {
 			queryTarget.lte = value
 			return this
 		}
 
-		def gte(Object value) {
+		RangeQuery gte(Object value) {
 			queryTarget.gte = value
 			return this
 		}
 
-		def lte(Object value) {
+		RangeQuery lte(Object value) {
 			queryTarget.lte = value
 			return this
 		}
 
-		def gt(Object value) {
+		RangeQuery gt(Object value) {
 			queryTarget.gt = value
 			return this
 		}
 
-		def lt(Object value) {
+		RangeQuery lt(Object value) {
 			queryTarget.lt = value
 			return this
 		}
 
-		def boost(Double value) {
+		void boost(Double value) {
 			queryTarget.boost = value
 			return this
 		}
@@ -556,7 +556,7 @@ class ElasticQueryBuilder {
 			searchItems = []
 		}
 
-		def add(String index, String type, String id, Object item) {
+		void add(String index, String type, String id, Object item) {
 			def headerRow = ['index':index ?: '_all']
 			if(type)
 				headerRow.type = type
@@ -566,7 +566,7 @@ class ElasticQueryBuilder {
 			searchItems << item.getMultiQuery()
 		}
 
-		def hasContent() {
+		Boolean hasContent() {
 			return searchItems.size() > 0
 		}
 
@@ -587,7 +587,7 @@ class ElasticQueryBuilder {
 			bulkItems = []
 		}
 
-		def add(String action, String index, String type, Object id, Map document) {
+		void add(String action, String index, String type, Object id, Map document) {
 			def actionRow = [:]
 			actionRow[action] = ['_index':index, '_id':id]
 			bulkItems << actionRow
@@ -595,7 +595,7 @@ class ElasticQueryBuilder {
 				bulkItems << document
 		}
 
-		def hasContent() {
+		Boolean hasContent() {
 			return bulkItems?.size() > 0
 		}
 
