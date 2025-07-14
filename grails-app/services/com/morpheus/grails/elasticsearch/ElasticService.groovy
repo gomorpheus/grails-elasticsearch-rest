@@ -64,7 +64,7 @@ class ElasticService {
 
 	GrailsApplication grailsApplication
 
-	private internalClient
+	private RestClient internalClient
 
 	static requestTimeout = 1000i * 20i
 	static requestSocketTimeout = 1000i * 30i
@@ -79,7 +79,7 @@ class ElasticService {
 		}
 	}
 
-	def getRestClient() {
+	RestClient getRestClient() {
 		if(internalClient == null) {
 			def configHosts = grailsApplication.config.getProperty('elasticSearch.client.hosts',List,null)
 			def protocol = grailsApplication.config.getProperty('elasticSearch.protocol',String,'http')
